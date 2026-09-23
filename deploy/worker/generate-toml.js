@@ -29,6 +29,7 @@ compatibility_flags = ["global_fetch_strictly_public"]
 directory = "../../frontend-dist"
 binding = "ASSETS"
 not_found_handling = "single-page-application"
+run_worker_first = true
 
 [images]
 binding = "IMAGES"
