@@ -398,14 +398,20 @@ export default {
                 const assetResponse = await env.ASSETS.fetch(request);
                 // NERV 主题注入：对 HTML 响应追加自定义样式表（不影响 API 与文件直链）
                 // 注意：ASSETS 可能返回压缩响应，HTMLRewriter 无法改写压缩流，
-                // 因此用 .text() 解压后字符串替换再重建响应。
+                // 因此用 .text() 解压后字符串替换再重建响应；原 ETag 对应未注入内容，必须删除。
                 const assetContentType = assetResponse.headers.get('content-type') || '';
                 if (assetResponse.ok && assetContentType.includes('text/html')) {
                     let html = await assetResponse.text();
-                    html = html.replace('</head>', '<link rel="stylesheet" href="/custom/nerv-theme.css"></head>');
+                    const injected = html.includes('</head>');
+                    if (injected) {
+                        html = html.replace('</head>', '<link rel="stylesheet" href="/custom/nerv-theme.css"></head>');
+                    }
                     const themed = new Response(html, assetResponse);
                     themed.headers.delete('content-encoding');
                     themed.headers.delete('content-length');
+                    themed.headers.delete('etag');
+                    themed.headers.set('cache-control', 'no-store');
+                    themed.headers.set('x-nerv-theme', injected ? 'injected' : 'no-head-tag');
                     return themed;
                 }
                 return assetResponse;
