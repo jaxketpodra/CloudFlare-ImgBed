@@ -1,0 +1,325 @@
+/* ============================================================
+   NERV THEME — EVA 警示风 × ROG 联名质感
+   注入方式：worker 层 HTMLRewriter（generate-routes.js 模板补丁）
+   设计基准：黑底 + 警示红主色 + 橙/琥珀点缀
+             切角面板 + HUD 细线框 + 扫描线 + 斜切警示条纹
+   ============================================================ */
+
+/* ---------- 1. 色板变量（明暗两套选择器都强制覆盖） ---------- */
+
+:root,
+html.dark {
+    /* 主色：EVA 警示红 */
+    --primary-color: #ff3b26;
+    --primary-color-accent: #ff6a3d;
+
+    /* 页面与文字 */
+    --bg-color: #0a0909;
+    --text-color: #ede8e1;
+    --text-color-secondary: #9c948a;
+    --text-bg-color: rgba(255, 59, 38, 0.08);
+    --icon-color: #c9c2b8;
+    --placeholder-color: #6e675f;
+
+    /* 背景图滤镜：压暗一点，让红色面板浮出来 */
+    --background-image-filter: brightness(0.75) saturate(1.1);
+    --image-preview-filter: none;
+
+    /* 玻璃面板：暗红调半透明 */
+    --glass-bg: rgba(14, 11, 10, 0.78);
+    --glass-border: rgba(255, 59, 38, 0.22);
+    --glass-border-hover: rgba(255, 59, 38, 0.5);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+    --glass-backdrop-blur: 14px;
+    --glass-header-bg: rgba(20, 14, 12, 0.85);
+    --glass-header-border: rgba(255, 59, 38, 0.28);
+
+    /* 弹层 */
+    --popper-bg-color: #161110;
+    --popper-shadow: 0 6px 24px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 59, 38, 0.18);
+
+    /* ---------- 上传区 ---------- */
+    --upload-list-file-icon-color: #ff6a3d;
+    --el-upload-dragger-bg-color: rgba(18, 12, 10, 0.55);
+    --el-upload-dragger-border: 1px dashed rgba(255, 59, 38, 0.55);
+    --el-upload-dragger-hover-box-shadow: 0 0 28px rgba(255, 59, 38, 0.35), inset 0 0 18px rgba(255, 59, 38, 0.08);
+    --el-upload-dragger-uniform-color: #ff3b26;
+    --upload-card-effect-color: color-mix(in srgb, var(--primary-color) 66%, #1a0f0c);
+    --upload-card-effect-highlight-color: color-mix(in srgb, var(--primary-color) 56%, #241310);
+    --upload-card-hover-glow-bg: radial-gradient(circle, color-mix(in srgb, var(--primary-color) 22%, transparent) 0%, transparent 70%);
+    --el-icon--upload-color: #ff3b26;
+    --upload-text-color: #b8b0a6;
+    --upload-header-color: #f2ede6;
+    --upload-main-title-color: #f5efe6;
+    --upload-title-text-color: #c9c2b8;
+    --upload-title-text-shadow: 0 0 18px rgba(255, 59, 38, 0.25);
+    --upload-title-hover-glow: rgba(255, 59, 38, 0.4);
+    --upload-title-underline-bg: linear-gradient(90deg, #ff3b26, #ff9500);
+    --upload-title-underline-shadow: 0 0 10px rgba(255, 59, 38, 0.6);
+    --upload-title-crayon-deep: #f5efe6;
+    --upload-title-crayon-edge: rgba(255, 59, 38, 0.5);
+    --upload-title-crayon-burr: transparent;
+    --upload-title-crayon-dust: transparent;
+    --modern-action-group-bg: rgba(20, 14, 12, 0.85);
+    --modern-action-group-border: rgba(255, 59, 38, 0.25);
+    --modern-action-group-hover-bg: rgba(255, 59, 38, 0.12);
+    --logo-glow-color: rgba(255, 59, 38, 0.45);
+    --upload-action-btn-bg: transparent;
+    --upload-action-btn-color: #c9c2b8;
+    --upload-action-btn-shadow: none;
+    --upload-action-btn-hover-bg: rgba(255, 59, 38, 0.14);
+    --upload-action-btn-hover-shadow: 0 0 12px rgba(255, 59, 38, 0.25);
+    --upload-action-btn-active-shadow: none;
+    --upload-action-copy-color: #ff6a3d;
+    --upload-action-retry-color: #ffc400;
+    --upload-action-danger-color: #ff3b26;
+    --upload-action-danger-bg: transparent;
+    --upload-action-danger-hover-bg: rgba(255, 59, 38, 0.16);
+    --upload-action-danger-hover-shadow: 0 0 12px rgba(255, 59, 38, 0.3);
+    --file-name-bg: rgba(20, 14, 12, 0.8);
+    --file-name-border: rgba(255, 59, 38, 0.18);
+    --file-name-hover-bg: rgba(255, 59, 38, 0.1);
+    --file-name-hover-border: rgba(255, 59, 38, 0.45);
+    --upload-list-item-border-color: rgba(255, 59, 38, 0.15);
+    --upload-list-item-hover-border: rgba(255, 59, 38, 0.4);
+    --dashboard-title-bg: transparent;
+
+    /* 工具栏/页脚 */
+    --toolbar-button-bg-color: rgba(20, 14, 12, 0.85);
+    --toolbar-button-shadow: 0 0 0 1px rgba(255, 59, 38, 0.2);
+    --toolbar-button-shadow-hover: 0 0 14px rgba(255, 59, 38, 0.35);
+    --toolbar-button-color: #d8d1c7;
+    --page-footer-text-color: #5f5952;
+    --page-footer-name-color: #8a837a;
+
+    /* 登录页 */
+    --password-input-bg-color: rgba(16, 12, 10, 0.85);
+    --login-title-color: #ff3b26;
+    --login-title-glow-color: rgba(255, 59, 38, 0.55);
+    --login-container-box-shadow: 0 0 0 1px rgba(255, 59, 38, 0.25), 0 12px 48px rgba(0, 0, 0, 0.6);
+    --login-container-hover-box-shadow: 0 0 0 1px rgba(255, 59, 38, 0.45), 0 12px 48px rgba(0, 0, 0, 0.65), 0 0 32px rgba(255, 59, 38, 0.15);
+    --login-input-underline-color: #ff3b26;
+    --login-input-label-focus-color: #ff6a3d;
+    --login-input-icon-color: #8a837a;
+
+    /* 对话框 */
+    --dialog-bg-color: rgba(18, 13, 11, 0.92);
+    --dialog-surface-bg-color: rgba(24, 17, 14, 0.9);
+    --dialog-backdrop-blur: 10px;
+    --dialog-box-shadow: 0 0 0 1px rgba(255, 59, 38, 0.28), 0 16px 64px rgba(0, 0, 0, 0.7);
+    --dialog-section-bg-color: rgba(255, 59, 38, 0.05);
+    --dialog-control-bg-color: rgba(14, 10, 9, 0.85);
+    --mobile-action-sheet-bg: #161110;
+    --mobile-action-sheet-border: rgba(255, 59, 38, 0.25);
+    --mobile-action-sheet-item-bg: transparent;
+    --mobile-action-sheet-item-active-bg: rgba(255, 59, 38, 0.12);
+
+    /* Tab 切换 */
+    --tabs-dropdown-popper-bg-color: #161110;
+    --tabs-dropdown-popper-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
+    --tabs-switcher-hover-bg: rgba(255, 59, 38, 0.1);
+    --tabs-switcher-border-color: rgba(255, 59, 38, 0.3);
+    --tabs-switcher-accent-color: #ff3b26;
+    --tabs-switcher-current-color: #ffd9d2;
+    --tabs-switcher-current-bg: rgba(255, 59, 38, 0.16);
+    --tabs-switcher-current-border-color: #ff3b26;
+
+    /* 管理端 */
+    --admin-container-bg-color: transparent;
+    --admin-container-color: #ede8e1;
+    --admin-dashborad-stats-bg-color: rgba(18, 13, 11, 0.85);
+    --admin-dashboard-btn-color: #d8d1c7;
+    --admin-dashboard-btn-bg-color: rgba(255, 59, 38, 0.1);
+    --admin-dashboard-btn-shadow: 0 0 0 1px rgba(255, 59, 38, 0.25);
+    --admin-dashboard-btn-hover-shadow: 0 0 16px rgba(255, 59, 38, 0.35);
+    --admin-dashboard-imgcard-bg-color: rgba(18, 13, 11, 0.85);
+    --admin-dashboard-imgcard-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    --admin-dashboard-tag-suggestion-bg-color: #161110;
+    --admin-dashboard-tag-suggestion-border-color: rgba(255, 59, 38, 0.3);
+    --admin-dashboard-tag-suggestion-box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6);
+    --admin-dashboard-tag-suggestion-item-hover-bg-color: rgba(255, 59, 38, 0.12);
+    --skeleton-bg-color: rgba(255, 59, 38, 0.06);
+    --skeleton-shimmer-color: rgba(255, 59, 38, 0.12);
+    --admin-batch-toolbar-bg: rgba(18, 13, 11, 0.92);
+    --admin-batch-toolbar-border: rgba(255, 59, 38, 0.3);
+    --admin-batch-toolbar-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+    --admin-batch-action-bg: rgba(255, 59, 38, 0.1);
+    --admin-batch-action-shadow: 0 0 0 1px rgba(255, 59, 38, 0.2);
+    --admin-batch-action-hover-bg: rgba(255, 59, 38, 0.2);
+    --admin-batch-action-hover-shadow: 0 0 12px rgba(255, 59, 38, 0.3);
+    --admin-batch-action-color: #ffd9d2;
+    --admin-batch-delete-color: #ff3b26;
+    --admin-batch-clear-color: #ffc400;
+
+    /* 主题切换/浮动按钮 */
+    --theme-toggle-color: #c9c2b8;
+    --theme-toggle-bg-color: rgba(20, 14, 12, 0.85);
+    --admin-theme-toggle-color: #c9c2b8;
+    --admin-theme-toggle-bg-color: rgba(20, 14, 12, 0.85);
+    --not-found-title-text-color: #ff3b26;
+    --floating-btn-color: #ffd9d2;
+    --floating-btn-shadow: 0 0 0 1px rgba(255, 59, 38, 0.4), 0 4px 16px rgba(0, 0, 0, 0.5);
+    --floating-btn-shadow-hover: 0 0 20px rgba(255, 59, 38, 0.5);
+
+    /* ---------- Element Plus 变量 ---------- */
+    --el-color-primary: #ff3b26;
+    --el-color-primary-rgb: 255, 59, 38;
+    --el-color-primary-light-3: #ff6a3d;
+    --el-color-primary-light-5: #8c2a1d;
+    --el-color-primary-light-7: #5c1c14;
+    --el-color-primary-light-8: #3d1310;
+    --el-color-primary-light-9: #260c0a;
+    --el-color-primary-dark-2: #ff6a3d;
+    --el-text-color-primary: #ede8e1;
+    --el-text-color-regular: #cfc8be;
+    --el-text-color-secondary: #9c948a;
+    --el-text-color-placeholder: #6e675f;
+    --el-text-color-disabled: #4d4741;
+    --el-border-color: #3d1512;
+    --el-border-color-light: #33120f;
+    --el-border-color-lighter: #2a0f0c;
+    --el-border-color-extra-light: #200c0a;
+    --el-border-radius-base: 2px;
+    --el-border-radius-small: 2px;
+    --el-fill-color: #241009;
+    --el-fill-color-light: #1c0d08;
+    --el-fill-color-lighter: #150a07;
+    --el-fill-color-blank: #100907;
+    --el-bg-color-page: #0a0909;
+    --el-bg-color: #141010;
+    --el-bg-color-overlay: #1a1310;
+}
+
+/* ---------- 2. 全局质感 ---------- */
+
+body {
+    font-variant-numeric: tabular-nums;
+    accent-color: #ff3b26;
+}
+
+::selection {
+    background: rgba(255, 59, 38, 0.35);
+    color: #fff;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: #3d1512;
+    border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #ff3b26;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* ---------- 3. NERV 装饰层 ---------- */
+
+/* 顶部警示条纹带 */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: repeating-linear-gradient(
+        -45deg,
+        #ff3b26 0, #ff3b26 14px,
+        #0a0909 14px, #0a0909 28px
+    );
+    opacity: 0.9;
+    z-index: 10000;
+    pointer-events: none;
+}
+
+/* 全屏扫描线 + 边缘暗角 */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255, 80, 50, 0.022) 0, rgba(255, 80, 50, 0.022) 1px,
+            transparent 1px, transparent 3px
+        ),
+        radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.4) 100%);
+}
+
+/* ---------- 4. 切角机甲面板 ---------- */
+
+.el-card,
+.el-dialog,
+.el-message,
+.el-message-box {
+    clip-path: polygon(
+        10px 0, 100% 0,
+        100% calc(100% - 10px), calc(100% - 10px) 100%,
+        0 100%, 0 10px
+    );
+}
+
+.el-button {
+    clip-path: polygon(
+        6px 0, 100% 0,
+        100% calc(100% - 6px), calc(100% - 6px) 100%,
+        0 100%, 0 6px
+    );
+    letter-spacing: 0.06em;
+    font-weight: 600;
+}
+
+.el-button--primary {
+    text-shadow: 0 0 8px rgba(255, 120, 90, 0.5);
+}
+
+/* ---------- 5. 标题字体：EVA 衬线大字风 ---------- */
+
+h1, h2, h3,
+.upload-main-title,
+.main-title,
+.login-title {
+    font-family: Georgia, 'Times New Roman', 'Songti SC', serif;
+    letter-spacing: 0.1em;
+}
+
+/* 页脚版权信息压低调 */
+.footer, .page-footer, footer {
+    letter-spacing: 0.08em;
+}
+
+/* ---------- 6. 细节修边 ---------- */
+
+/* 输入框聚焦红光 */
+.el-input__wrapper.is-focus,
+.el-select__wrapper.is-focused,
+.el-textarea__inner:focus {
+    box-shadow: 0 0 0 1px #ff3b26 inset, 0 0 14px rgba(255, 59, 38, 0.25) !important;
+}
+
+/* 上传拖拽区圆角收直角，味道更硬 */
+.el-upload-dragger {
+    border-radius: 2px;
+}
+
+/* 链接/强调色 */
+a {
+    color: #ff6a3d;
+}
+a:hover {
+    color: #ff3b26;
+    text-shadow: 0 0 10px rgba(255, 59, 38, 0.5);
+}
+
+/* 分页/开关等主色细节 */
+.el-switch.is-checked .el-switch__core {
+    border-color: #ff3b26;
+}

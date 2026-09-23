@@ -395,7 +395,19 @@ export default {
 
         if (!matched) {
             if (env.ASSETS) {
-                return env.ASSETS.fetch(request);
+                const assetResponse = await env.ASSETS.fetch(request);
+                // NERV 主题注入：对 HTML 响应追加自定义样式表（不影响 API 与文件直链）
+                const assetContentType = assetResponse.headers.get('content-type') || '';
+                if (assetResponse.ok && assetContentType.includes('text/html')) {
+                    return new HTMLRewriter()
+                        .on('head', {
+                            element(el) {
+                                el.append('<link rel="stylesheet" href="/custom/nerv-theme.css">', { html: true });
+                            },
+                        })
+                        .transform(assetResponse);
+                }
+                return assetResponse;
             }
             return new Response('Not Found', { status: 404 });
         }
@@ -451,3 +463,4 @@ writeFileSync(outputPath, output, 'utf8');
 console.log(`Generated deploy/worker/index.js`);
 console.log(`  Middlewares: ${middlewares.length}`);
 console.log(`  Routes: ${routes.length} (${routes.filter(r => r.isCatchAll).length} catch-all)`);
+
