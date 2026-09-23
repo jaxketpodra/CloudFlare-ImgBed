@@ -404,7 +404,7 @@ export default {
                     let html = await assetResponse.text();
                     const injected = html.includes('</head>');
                     if (injected) {
-                        html = html.replace('</head>', '<link rel="stylesheet" href="/custom/nerv-theme.css"></head>');
+                        html = html.replace('</head>', '<link rel="stylesheet" href="/custom/nerv-theme.css"><script src="/custom/nerv-patch.js" defer></script></head>');
                     }
                     const themed = new Response(html, assetResponse);
                     themed.headers.delete('content-encoding');
